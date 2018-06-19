@@ -1,3 +1,25 @@
+class vertex():
+
+	def __init__(self, code, credits = None):
+		self.code = code
+		self.credits = credits
+		self.studied = False
+		self.successores = set()
+		self.predecessores = set()
+
+	def add_successor(self, vertex):
+		self.successores.add(vertex)
+
+	def remove_successor(self, vertex):
+		self.successores.remove(vertex)
+
+	def add_predecessor(self, vertex):
+		self.predecessores.add(vertex)
+
+	def remove_predecessor(self, vertex):
+		self.predecessores.remove(vertex)
+
+
 class graph(vertex):
 
 	def __init__(self):
@@ -63,7 +85,7 @@ class graph(vertex):
 
 	def search_transitive_closure(self, vertex, visited):
 		visited.append(vertex)
-		for adj in self.adjacent(vertex)
+		for adj in self.adjacent(vertex):
 			if adj not in visited:
 				self.search_transitive_closure(adj, visited)
 		return visited
@@ -83,7 +105,7 @@ class graph(vertex):
 		visited.append(v)
 		for adj in self.adjacent(vertex):
 			if adj not in previus:
-				if is_cycle(adj, v, visited)
+				if is_cycle(adj, v, visited):
 					return True
 		visited.remove_vertex(vertex)
 		return False
@@ -118,27 +140,6 @@ class graph(vertex):
 		charge = 30
 		plan = []
 		return semester
-
-class vertex():
-
-	def __init__(self, code, credits = None):
-		self.code = code
-		self.credits = credits
-		self.studied = False
-		self.successores = set()
-		self.predecessores = set()
-
-	def add_successor(self, vertex):
-		self.successores.add(vertex)
-
-	def remove_successor(self, vertex):
-		self.successores.remove(vertex)
-
-	def add_predecessor(self, vertex):
-		self.predecessores.add(vertex)
-
-	def remove_predecessor(self, vertex):
-		self.predecessores.remove(vertex)]
 
 	def main():
 		gnew = graph()
