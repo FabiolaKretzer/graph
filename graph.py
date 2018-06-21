@@ -81,39 +81,41 @@ class graph(vertex):
 				return False
 		return True
 
-	# em teste
 	def transitive_closure(self, vertex):
-		group = {}
+		group = set()
 		return self.search_transitive_closure(vertex, group)
 
 	def search_transitive_closure(self, vertex, visited):
-		visited.append(vertex)
+		visited.add(vertex)
 		for adj in self.adjacent(vertex):
 			if adj not in visited:
 				self.search_transitive_closure(adj, visited)
 		return visited
 
-
 	def is_connected(self):
-		return self.vertexs.equals(self.transitive_closure(self.one_vertex()))
+		if len(self.vertexs.difference(self.transitive_closure(self.one_vertex()))) == 0:
+			return True
+		return False
 
 	def is_tree(self):
 		v = self.one_vertex()
-		group = {}
+		group = set()
 		return self.is_connected and not self.is_cycle(v, v, group)
 
 	def is_cycle(self, vertex, previous, visited):
 		if vertex in visited:
 			return True
-		visited.append(v)
+		visited.add(vertex)
 		for adj in self.adjacent(vertex):
 			if adj not in previus:
-				if is_cycle(adj, v, visited):
+				if is_cycle(adj, vertex, visited):
 					return True
-		visited.remove_vertex(vertex)
+		visited.remove(vertex)
+		# para chamar o metodo remove_vertex,
+		# mudar os parametros para reveber conjuntos
 		return False
 
-
+		#em teste
 	def topological_ordering(self):
 		ordination = []
 		group = {}
