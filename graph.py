@@ -28,6 +28,7 @@ class graph(vertex):
 	def add_vertex(self, vertex):
 		self.vertexs.add(vertex)
 
+	# Set changed size during iteration, line 35
 	def remove_vertex(self, vertex):
 		for v in vertex.successores:
 			vertex.remove_successor(v)
@@ -49,15 +50,16 @@ class graph(vertex):
 	def vertex(self):
 		return self.vertexs
 
-	def one_vertice(self):
+	def one_vertex(self):
 		vertex = self.vertexs.pop()
 		self.vertexs.add(vertex)
 		return vertex
 
+	#retorna apenas sucessores
 	def adjacent(self, vertex):
 		conj = set()
-		conj.append(vertex.successores)
-		for v in vertexs:
+		conj.union(vertex.successores)
+		for v in self.vertexs:
 			if vertex in v.predecessores:
 				conj.add(v)
 		return conj
@@ -66,19 +68,20 @@ class graph(vertex):
 		return len(self.adjacent(vertex))
 
 	def is_regular(self):
-		n = self.grau(self.one_vertex())
-		for v in vertexs:
-			if self.grau(v) not in n:
+		n = self.grade(self.one_vertex())
+		for v in self.vertexs:
+			if self.grade(v) != n:
 				return False
 		return True
 
 	def is_complete(self):
-		n = self.order - 1
-		for v in self.vertex:
-			if self.grade(v) not in n:
+		n = self.order() - 1
+		for v in self.vertexs:
+			if self.grade(v) != n:
 				return False
 		return True
 
+	# em teste
 	def transitive_closure(self, vertex):
 		group = {}
 		return self.search_transitive_closure(vertex, group)
@@ -278,18 +281,18 @@ def main():
 	gnew.connect(INE5453, INE5433)
 	gnew.connect(INE5433, INE5434)
 
+	#print("ORDENAÇÂO TOPOLOGICA: ")
+	#ordenation = []
+	#ordenation = gnew.topological_ordering()
+	#for v in ordenation:
+	#	print(v)
+	#print("PLANO: ")
+	#semester = []
+	#semester = gnew.planning()
+	#for conj in semester:
+	#	for v in conj:
+	#		print(v)
 
-	print("ORDENAÇÂO TOPOLOGICA: ")
-	ordenation = []
-	ordenation = gnew.topological_ordering()
-	for v in ordenation:
-		print(v)
-	print("PLANO: ")
-	semester = []
-	semester = gnew.planning()
-	for conj in semester:
-		for v in conj:
-			print(v)
 	
 
 if __name__ == "__main__":
