@@ -28,12 +28,12 @@ class graph(vertex):
 	def add_vertex(self, vertex):
 		self.vertexs.add(vertex)
 
-	# Set changed size during iteration, line 35
+	# metodo com falha
 	def remove_vertex(self, vertex):
-		for v in vertex.successores:
-			vertex.remove_successor(v)
 		for v in vertex.predecessores:
-			vertex.remove_predecessor(v)
+			vertex.remove_successor(v)
+		for v in vertex.successores:
+			vertex.remove_predecessores(v)
 		self.vertexs.remove(vertex)
 
 	def connect(self, vertex1, vertex2):
@@ -55,12 +55,10 @@ class graph(vertex):
 		self.vertexs.add(vertex)
 		return vertex
 
-	#retorna apenas sucessores
 	def adjacent(self, vertex):
-		conj = set()
-		conj.union(vertex.successores)
+		conj = set(vertex.successores)
 		for v in self.vertexs:
-			if vertex in v.predecessores:
+			if v in vertex.predecessores:
 				conj.add(v)
 		return conj
 
@@ -115,35 +113,50 @@ class graph(vertex):
 		# mudar os parametros para reveber conjuntos
 		return False
 
-		#em teste
+	#nao medificado, apenas copiado do whats
 	def topological_ordering(self):
-		ordination = []
-		group = {}
+		group = []
+		ordenation = []		
 		for v in self.vertexs:
 			if not v.predecessores:
 				group.append(v)
+
 		while group:
-			v = group.pop()
-			ordination.append(v)
-			for m in v.successores:
-				self.disconnect(v, m)
-				if not m.predecessores:
-					group.append(m)
-		return ordination
+			v = group.pop(0)
+			if not v.studied:
+				ordenation.append(v)
+				for m in v.successores.copy():
+					self.disconnect(v, m)
+					if not m.predecessores:
+						group.append(m)
+		return ordenation
 
 	def planning(self):
+		group = []
 		charge = 30
 		plan = []
-		semester = {}
-		ordination = topological_ordering()
-		for v in ordination:
-			if not v.studied and charge != 0:
+		semester = []
+		ordenation = []		
+		for v in self.vertexs:
+			if not v.predecessores:
+				group.append(v)
+
+		while group:
+			v = group.pop(0)
+			if not v.studied and (charge - v.credits) > 0:
 				plan.append(v)
-				charge-= v.credits
+				ordenation.append(v)
+				charge -= v.credits
 				v.studied = True
-		semester.append(plan)
-		charge = 30
-		plan = []
+				for m in v.successores.copy():
+					self.disconnect(v, m)
+					if not m.predecessores:
+						group.append(m)
+			else:
+				group.insert(0, v)
+				semester.append(tuple(plan))
+				charge = 30
+				plan = []
 		return semester
 
 def main():
@@ -283,17 +296,27 @@ def main():
 	gnew.connect(INE5453, INE5433)
 	gnew.connect(INE5433, INE5434)
 
-	#print("ORDENAÇÂO TOPOLOGICA: ")
-	#ordenation = []
-	#ordenation = gnew.topological_ordering()
-	#for v in ordenation:
-	#	print(v)
-	#print("PLANO: ")
-	#semester = []
-	#semester = gnew.planning()
-	#for conj in semester:
-	#	for v in conj:
-	#		print(v)
+	#r = gnew.order()
+	#print(r)
+	#gnew.remove_vertex(INE5414)
+	#s = gnew.order
+	#print(s)
+
+	print("ORDENAÇÂO TOPOLOGICA: ")
+	ordenation = []
+	ordenation = gnew.topological_ordering()
+	for v in ordenation:
+		print(v.code)
+	
+	print("PLANO: ")
+	semester = [] 
+	semester = gnew.planning()
+	for i, conj in enumerate(semester):
+		print("========================================")
+		print("Semestre:", i+1)
+		for v in conj:
+			print(v.code)
+			print(v.credits)
 
 	
 
