@@ -28,12 +28,11 @@ class graph(vertex):
 	def add_vertex(self, vertex):
 		self.vertexs.add(vertex)
 
-	# metodo com falha
 	def remove_vertex(self, vertex):
 		for v in vertex.predecessores:
-			vertex.remove_successor(v)
+			v.remove_successor(vertex)
 		for v in vertex.successores:
-			vertex.remove_predecessores(v)
+			v.remove_predecessores(vertex)
 		self.vertexs.remove(vertex)
 
 	def connect(self, vertex1, vertex2):
@@ -83,7 +82,7 @@ class graph(vertex):
 		group = set()
 		return self.search_transitive_closure(vertex, group)
 
-	def search_transitive_closure(self, vertex, visited):
+	def __search_transitive_closure(self, vertex, visited):
 		visited.add(vertex)
 		for adj in self.adjacent(vertex):
 			if adj not in visited:
@@ -100,7 +99,7 @@ class graph(vertex):
 		group = set()
 		return self.is_connected and not self.is_cycle(v, v, group)
 
-	def is_cycle(self, vertex, previous, visited):
+	def __is_cycle(self, vertex, previous, visited):
 		if vertex in visited:
 			return True
 		visited.add(vertex)
@@ -109,11 +108,8 @@ class graph(vertex):
 				if is_cycle(adj, vertex, visited):
 					return True
 		visited.remove(vertex)
-		# para chamar o metodo remove_vertex,
-		# mudar os parametros para reveber conjuntos
 		return False
 
-	#nao medificado, apenas copiado do whats
 	def topological_ordering(self):
 		group = []
 		ordenation = []		
@@ -296,12 +292,6 @@ def main():
 	gnew.connect(INE5453, INE5433)
 	gnew.connect(INE5433, INE5434)
 
-	#r = gnew.order()
-	#print(r)
-	#gnew.remove_vertex(INE5414)
-	#s = gnew.order
-	#print(s)
-
 	print("ORDENAÇÂO TOPOLOGICA: ")
 	ordenation = []
 	ordenation = gnew.topological_ordering()
@@ -317,8 +307,6 @@ def main():
 		for v in conj:
 			print(v.code)
 			print(v.credits)
-
-	
 
 if __name__ == "__main__":
 	main()
