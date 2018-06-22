@@ -1,5 +1,8 @@
 class vertex():
-
+	
+	"""
+	Cria um objeto vertex com alguns atributos.
+	"""
 	def __init__(self, code, credits = None):
 		self.code = code
 		self.credits = credits
@@ -7,27 +10,53 @@ class vertex():
 		self.successores = set()
 		self.predecessores = set()
 
+	"""
+	Recebe um vertice como parametro e o adiciona no conjunto 
+	de vertices sucessores.
+	"""
 	def add_successor(self, vertex):
 		self.successores.add(vertex)
 
+	"""
+	Recebe um vertice como parametro e o remove do conjunto 
+	de vertices sucessores.
+	"""
 	def remove_successor(self, vertex):
 		self.successores.remove(vertex)
 
+	"""
+	Recebe um vertice como parametro e o adiciona no conjunto 
+	de vertices antecessores.
+	"""
 	def add_predecessor(self, vertex):
 		self.predecessores.add(vertex)
-
+	
+	"""
+	Recebe um vertice como parametro e o remove do conjunto 
+	de vertices antecessores.
+	"""
 	def remove_predecessor(self, vertex):
 		self.predecessores.remove(vertex)
 
 
 class graph(vertex):
 
+	"""
+	Cria um objeto graph com um conjunto de vertices vazio.
+	"""
 	def __init__(self):
 		self.vertexs = set()
 
+	"""
+	Recebe como parametro um vertice e o adiciona no conjunto de 
+	vértices do grafo.
+	"""
 	def add_vertex(self, vertex):
 		self.vertexs.add(vertex)
 
+	"""
+	Recebe como parametro um vertice e o remove do grafo junto com suas conexoes.
+	"""
 	def remove_vertex(self, vertex):
 		for v in vertex.predecessores:
 			v.remove_successor(vertex)
@@ -35,25 +64,46 @@ class graph(vertex):
 			v.remove_predecessores(vertex)
 		self.vertexs.remove(vertex)
 
+	"""
+	Recebe como parametros dois vertices e os conecta adicionando v2 no
+	conjunto de sucessores de v1 e v1 no conjunto de antecessores de v2.
+	"""
 	def connect(self, vertex1, vertex2):
 		vertex1.add_successor(vertex2)
 		vertex2.add_predecessor(vertex1)
 
+	"""
+	Recebe como parametros dois vertices e os desconecta removendo v2 do 
+	conjunto de sucessores de v1 e v1 do conjunto antecessores de v2.
+	"""
 	def disconnect(self, vertex1, vertex2):
 		vertex1.remove_successor(vertex2)
 		vertex2.remove_predecessor(vertex1)
 
+	"""
+	Retorna o numero de vertices do grafo.
+	"""
 	def order(self):
 		return len(self.vertexs)
 
+	"""
+	Retorna um conjunto contendo os vertices do grafo.
+	"""
 	def vertex(self):
 		return self.vertexs
 
+	"""
+	Retorna um vertice qualquer do grafo.
+	"""
 	def one_vertex(self):
 		vertex = self.vertexs.pop()
 		self.vertexs.add(vertex)
 		return vertex
 
+	"""
+	Recebe como parametro um vértice e retorna um conjunto de vertices
+	adjacentes a ele.
+	"""
 	def adjacent(self, vertex):
 		conj = set(vertex.successores)
 		for v in self.vertexs:
@@ -61,9 +111,15 @@ class graph(vertex):
 				conj.add(v)
 		return conj
 
+	"""
+	Retorna o número de vertices adjacentes a v no grafo.
+	"""
 	def grade(self, vertex):
 		return len(self.adjacent(vertex))
 
+	"""
+	Verifica se todos os vertices do grafo possuem o mesmo grau.
+	"""
 	def is_regular(self):
 		n = self.grade(self.one_vertex())
 		for v in self.vertexs:
@@ -71,6 +127,10 @@ class graph(vertex):
 				return False
 		return True
 
+	"""
+	Verifica se cada vertice do grafo esta conectados
+	a todos os outros vertices.
+	"""
 	def is_complete(self):
 		n = self.order() - 1
 		for v in self.vertexs:
@@ -78,10 +138,18 @@ class graph(vertex):
 				return False
 		return True
 
+	"""
+	Retorna um conjunto contendo todos os vertices do grafo que
+	sao transitivamente alcancaveis partindo-se de v
+	"""
 	def transitive_closure(self, vertex):
 		group = set()
 		return self.search_transitive_closure(vertex, group)
 
+
+	"""
+	Privado - utilizada por transitive_closure.
+	"""
 	def __search_transitive_closure(self, vertex, visited):
 		visited.add(vertex)
 		for adj in self.adjacent(vertex):
@@ -89,16 +157,27 @@ class graph(vertex):
 				self.search_transitive_closure(adj, visited)
 		return visited
 
+	"""
+	Verifica se existe pelo menos um caminho que entre
+        cada par de vertices do grafo.
+	"""
 	def is_connected(self):
 		if len(self.vertexs.difference(self.transitive_closure(self.one_vertex()))) == 0:
 			return True
 		return False
 
+	"""
+	Verifica se o grafo é uma árvore, ou seja, 
+	se não possue ciclos se é conexo.
+	"""
 	def is_tree(self):
 		v = self.one_vertex()
 		group = set()
 		return self.is_connected and not self.is_cycle(v, v, group)
 
+	"""
+	Privado - verifica se v faz parte de algum ciclo no grafo.
+	"""
 	def __is_cycle(self, vertex, previous, visited):
 		if vertex in visited:
 			return True
@@ -110,6 +189,9 @@ class graph(vertex):
 		visited.remove(vertex)
 		return False
 
+	"""
+	Retorna a ordenacao topologica do grafo.
+	"""
 	def topological_ordering(self):
 		group = []
 		ordenation = []		
@@ -127,6 +209,10 @@ class graph(vertex):
 						group.append(m)
 		return ordenation
 
+	"""
+	Distribui os vertices em semetres com carga horaria semestral = 30 horas 
+	e retorna uma lista de semestres.
+	"""
 	def planning(self):
 		group = []
 		charge = 30
@@ -153,6 +239,11 @@ class graph(vertex):
 				semester.append(tuple(plan))
 				charge = 30
 				plan = []
+		if not group:
+			group.insert(0, v)
+			semester.append(tuple(plan))
+			charge = 30
+			plan = []
 		return semester
 
 def main():
