@@ -38,7 +38,6 @@ class vertex():
 	def remove_predecessor(self, vertex):
 		self.predecessores.remove(vertex)
 
-
 class graph(vertex):
 
 	"""
@@ -216,9 +215,8 @@ class graph(vertex):
 	def planning(self):
 		group = []
 		charge = 30
-		plan = []
-		semester = []
-		ordenation = []		
+		plan = set()
+		semester = []	
 		for v in self.vertexs:
 			if not v.predecessores:
 				group.append(v)
@@ -226,8 +224,7 @@ class graph(vertex):
 		while group:
 			v = group.pop(0)
 			if not v.studied and (charge - v.credits) > 0:
-				plan.append(v)
-				ordenation.append(v)
+				plan.add(v)
 				charge -= v.credits
 				v.studied = True
 				for m in v.successores.copy():
@@ -238,12 +235,11 @@ class graph(vertex):
 				group.insert(0, v)
 				semester.append(tuple(plan))
 				charge = 30
-				plan = []
+				plan = set()
 		if not group:
-			group.insert(0, v)
 			semester.append(tuple(plan))
 			charge = 30
-			plan = []
+			plan = set()
 		return semester
 
 def main():
