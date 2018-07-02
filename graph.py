@@ -190,6 +190,9 @@ class graph(vertex):
 
 	"""
 	Retorna a ordenacao topologica do grafo.
+
+	Linha 210 está desconectando definitivamente as matérias,
+	por este motivo, ao chamar mais de uma vez o método de ordenação, dará falha
 	"""
 	def topological_ordering(self):
 		group = []
@@ -213,33 +216,26 @@ class graph(vertex):
 	e retorna uma lista de semestres.
 	"""
 	def planning(self):
-		group = []
+		ordenation = self.topological_ordering()
 		charge = 30
 		plan = set()
-		semester = []	
-		for v in self.vertexs:
-			if not v.predecessores:
-				group.append(v)
+		semester = []
 
-		while group:
-			v = group.pop(0)
-			if not v.studied and (charge - v.credits) > 0:
+		while ordenation:
+			v = ordenation.pop(0)
+			if not v.studied and (charge - v.credits >= 0):
 				plan.add(v)
 				charge -= v.credits
 				v.studied = True
-				for m in v.successores.copy():
-					self.disconnect(v, m)
-					if not m.predecessores:
-						group.append(m)
 			else:
-				group.insert(0, v)
+				ordenation.insert(0, v)
 				semester.append(tuple(plan))
-				charge = 30
+				charge = 30 
 				plan = set()
-		if not group:
+
+		if not ordenation:
 			semester.append(tuple(plan))
-			charge = 30
-			plan = set()
+		
 		return semester
 
 def main():
@@ -379,12 +375,14 @@ def main():
 	gnew.connect(INE5453, INE5433)
 	gnew.connect(INE5433, INE5434)
 
+	"""
 	print("ORDENAÇÂO TOPOLOGICA: ")
 	ordenation = []
 	ordenation = gnew.topological_ordering()
 	for v in ordenation:
 		print(v.code)
-	
+
+	"""
 	print("PLANO: ")
 	semester = [] 
 	semester = gnew.planning()
@@ -394,6 +392,7 @@ def main():
 		for v in conj:
 			print(v.code)
 			print(v.credits)
+	
 
 if __name__ == "__main__":
 	main()
